@@ -1,24 +1,24 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
-import { IonContent, LoadingController } from "@ionic/angular";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { IonContent, LoadingController } from '@ionic/angular';
 import { SendBirdService } from '../../services/sendbird.service';
 import {
-    format,
-    isAfter,
-    isBefore,
-    isFriday,
-    isMonday,
-    isSaturday,
-    isSunday,
-    isThursday,
-    isToday,
-    isTuesday,
-    isWednesday,
-    isYesterday,
-    parseISO,
-    subMonths,
-    subWeeks
-} from "date-fns";
+  format,
+  isAfter,
+  isBefore,
+  isFriday,
+  isMonday,
+  isSaturday,
+  isSunday,
+  isThursday,
+  isToday,
+  isTuesday,
+  isWednesday,
+  isYesterday,
+  toDate,
+  subMonths,
+  subWeeks,
+} from 'date-fns';
 import { isNullOrUndefined } from 'util';
 
 @Component({
@@ -214,7 +214,7 @@ export class ChatPage implements OnInit {
       // console.log('-');
       return "-";
     }
-    const parseDate = parseISO(message.createdAt);
+    const parseDate = toDate(message.createdAt);
     // console.log('createdAt:', parseDate);
 
     // Date before 6 months, return DAY MONTH YEAR

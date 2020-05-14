@@ -1,16 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import { Router, NavigationExtras } from "@angular/router";
-import {
-  NavController,
-  LoadingController,
-  AlertController
-} from "@ionic/angular";
-import { SendBirdService } from "../../services/sendbird.service";
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationExtras } from '@angular/router';
+import { LoadingController, AlertController } from '@ionic/angular';
+import { SendBirdService } from '../../services/sendbird.service';
 
 @Component({
-  selector: "app-list",
-  templateUrl: "./list.page.html",
-  styleUrls: ["./list.page.scss"],
+  selector: 'app-list',
+  templateUrl: './list.page.html',
+  styleUrls: ['./list.page.scss'],
 })
 export class ListPage implements OnInit {
   chats: Array<any> = [];
@@ -19,7 +15,6 @@ export class ListPage implements OnInit {
 
   constructor(
     private router: Router,
-    public navCtrl: NavController,
     private sendBird: SendBirdService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController
@@ -37,7 +32,7 @@ export class ListPage implements OnInit {
     this.presentPrompt("Connect as...").then((email) => {
       this.loading.present();
       this.sendBird
-        .connectUser(email)
+       .connectUser(email)
         .then((user) => {
           this.user = user;
           this.getChannels();

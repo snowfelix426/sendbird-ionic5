@@ -17,7 +17,7 @@
         <img src="{{ message._sender.profileUrl }}">
       </ion-avatar>
       {{ message.message }}
-      {{ getMessageTime(message) }}
+      {{ getDateGroupFromMessage(message) }}
       <ion-avatar *ngIf="message._sender.userId === user.userId" slot="end"> 
         <img src="{{ message._sender.profileUrl }}">
       </ion-avatar>
