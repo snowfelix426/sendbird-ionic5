@@ -6,6 +6,11 @@
 </ion-header>
 
 <ion-content class="home">
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)" [disabled]="noMoreResults" position="top">
+    <ion-infinite-scroll-content loadingSpinner="bubbles">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
   <ion-list>
     <ion-item *ngFor="let message of messages" [ngClass]="{'-left': message._sender.userId !== user.userId }">
       <ion-avatar *ngIf="message._sender.userId !== user.userId" slot="start"> 

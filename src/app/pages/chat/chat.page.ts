@@ -9,13 +9,19 @@ import { SendBirdService } from "../../services/sendbird.service";
   styleUrls: ["./chat.page.scss"],
 })
 export class ChatPage implements OnInit {
-  public chat: any;
-  public chatBox: string = "";
-  public messages: Array<{ message: string; createdAt: Date }>;
-  private loading;
-  public user;
   @ViewChild(IonContent) content: IonContent;
 
+  chat: any;
+  chatBox: string = "";
+  messages: Array<any> = [];
+  user: any;
+  loadingBar: any;
+
+  loading = false;
+  isScrolling = false;
+  infiniteScrollEvent = null;
+  noMoreResults = false;
+  
   constructor(
     private sendBird: SendBirdService,
     private loadingCtrl: LoadingController,
@@ -41,25 +47,52 @@ export class ChatPage implements OnInit {
       .then((channel) => (this.chat = channel));
     this.subscribeOnReceiveMessages();
 
+    this.getMessageList();
+  }
+  
+  getMessageList() {
     var messageListQuery = this.chat.createPreviousMessageListQuery();
     messageListQuery.load(
       30,
       true,
       (messageList: Array<{ message: string; createdAt: Date }>, error) => {
         if (error) return console.error(error);
-        this.messages = messageList.reverse();
-        this.loading && this.loading.dismiss();
+        this.messages.unshift(messageList.reverse());
+        this.loading = false;
+        this.noMoreResults = false;
+        this.completeInfiniteScrollEvent();
+        this.loadingBar && this.loadingBar.dismiss();
         this.scrollBottom();
       }
     );
-   }
+  }
   
   async showLoading() {
-    this.loading = await this.loadingCtrl.create({
+    this.loadingBar = await this.loadingCtrl.create({
       message: "Please wait...",
       duration: 5000,
     });
-    await this.loading.present();
+    await this.loadingBar.present();
+  }
+
+  loadData(event) {
+    console.log("infinite scroll load");
+    this.infiniteScrollEvent = event;
+
+    if (this.noMoreResults || this.loading) {
+      return this.completeInfiniteScrollEvent();
+    }
+
+    this.loading = true;
+
+    //this.getMessageList(true);
+  }
+
+  completeInfiniteScrollEvent() {
+    if (this.infiniteScrollEvent) {
+      this.infiniteScrollEvent.target.complete();
+      this.infiniteScrollEvent = null;
+    }
   }
 
   ionViewWillLeave() {
