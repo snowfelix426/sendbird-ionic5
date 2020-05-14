@@ -9,10 +9,9 @@
 
       <ion-content>
         <ion-list>
-          <ion-item button menuClose *ngFor="let p of pages" [routerLink]="p.url">
+          <ion-item button *ngFor="let p of pages" (click)="openPage(p.url)">
             {{p.title}}
           </ion-item>
-
         </ion-list>
       </ion-content>
     </ion-menu>

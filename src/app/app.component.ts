@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { Platform } from '@ionic/angular';
+import { Platform, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -13,6 +14,8 @@ export class AppComponent {
   pages: Array<{ title: string; url: any }>;
 
   constructor(
+    private router: Router,
+    private menuCtrl: MenuController,
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar
@@ -30,5 +33,10 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+  }
+
+  openPage(page: any) {
+    this.router.navigateByUrl(page);
+    this.menuCtrl.close();
   }
 }

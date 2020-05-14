@@ -13,9 +13,9 @@ import { SendBirdService } from "../../services/sendbird.service";
   styleUrls: ["./list.page.scss"],
 })
 export class ListPage implements OnInit {
-  public chats: Array<any> = [];
-  private loading;
-  private user;
+  chats: Array<any> = [];
+  loading: any;
+  user: any;
 
   constructor(
     private router: Router,
