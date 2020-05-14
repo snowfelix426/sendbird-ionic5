@@ -1,7 +1,24 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { IonContent, LoadingController } from "@ionic/angular";
-import { SendBirdService } from "../../services/sendbird.service";
+import { SendBirdService } from '../../services/sendbird.service';
+import {
+    format,
+    isAfter,
+    isBefore,
+    isFriday,
+    isMonday,
+    isSaturday,
+    isSunday,
+    isThursday,
+    isToday,
+    isTuesday,
+    isWednesday,
+    isYesterday,
+    parseISO,
+    subMonths,
+    subWeeks
+} from "date-fns";
 
 @Component({
   selector: "app-chat",
@@ -188,5 +205,93 @@ export class ChatPage implements OnInit {
       }
     }
     return "";
+  }
+
+  getDateGroupFromMessage(message) {
+    const createdAt = message.createdAt;
+    if (isNullOrUndefined(createdAt)) {
+      // console.log('-');
+      return "-";
+    }
+    const parseDate = parseISO(message.createdAt);
+    // console.log('createdAt:', parseDate);
+
+    // Date before 6 months, return DAY MONTH YEAR
+    const pastSixMonths = subMonths(new Date(), 1);
+    const afterSixMonths = isAfter(pastSixMonths, parseDate);
+
+    if (afterSixMonths) {
+      // console.log('afterSixMonths');
+      return format(parseDate, "d MMM y");
+    }
+
+    // Date after last week, return WEEKDAY DAY MONTH
+    const lastWeek = subWeeks(new Date(), 1);
+    const afterLastWeek = isAfter(lastWeek, parseDate);
+    if (afterLastWeek) {
+      // console.log('afterLastWeek');
+      return format(parseDate, "iii, d MMM");
+    }
+
+    // Date before last week, return TODAY || YESTERDAY || WEEKDAY
+    const today = isToday(parseDate);
+    if (today) {
+      // console.log('today');
+      return "Today";
+    }
+
+    const yesterday = isYesterday(parseDate);
+    if (yesterday) {
+      // console.log('yesterday');
+      return "Yesterday";
+    }
+
+    const beforeLastWeek = isBefore(lastWeek, parseDate);
+    if (beforeLastWeek) {
+      // console.log('beforeLastWeek');
+
+      const sunday = isSunday(parseDate);
+      if (sunday) {
+        // console.log('sunday');
+        return "Sunday";
+      }
+
+      const saturday = isSaturday(parseDate);
+      if (saturday) {
+        // console.log('saturday');
+        return "Saturday";
+      }
+
+      const friday = isFriday(parseDate);
+      if (friday) {
+        // console.log('friday');
+        return "Friday";
+      }
+
+      const thursday = isThursday(parseDate);
+      if (thursday) {
+        // console.log('thursday');
+        return "Thursday";
+      }
+
+      const wednesday = isWednesday(parseDate);
+      if (wednesday) {
+        // console.log('wednesday');
+        return "Wednesday";
+      }
+
+      const tuesday = isTuesday(parseDate);
+      if (tuesday) {
+        // console.log('tuesday');
+        return "Tuesday";
+      }
+
+      const monday = isMonday(parseDate);
+      if (monday) {
+        // console.log('monday');
+        return "Monday";
+      }
+    }
+    return "parseDate error";
   }
 }
