@@ -9,7 +9,7 @@ import { SendBirdService } from "../../services/sendbird.service";
   styleUrls: ["./chat.page.scss"],
 })
 export class ChatPage implements OnInit {
-  public chat;
+  public chat: any;
   public chatBox: string = "";
   public messages: Array<{ message: string; createdAt: Date }>;
   private loading;
@@ -28,11 +28,14 @@ export class ChatPage implements OnInit {
       if (this.router.getCurrentNavigation().extras.state) {
         this.chat = this.router.getCurrentNavigation().extras.state.chat;
         this.user = this.router.getCurrentNavigation().extras.state.user;
+
         console.log("this.chat: ", this.chat);
         console.log("this.user: ", this.user);
       }
     });
+  }
 
+  ngOnInit() {
     this.sendBird
       .enterOnChat(this.chat.url)
       .then((channel) => (this.chat = channel));
@@ -49,9 +52,7 @@ export class ChatPage implements OnInit {
         this.scrollBottom();
       }
     );
-  }
-
-  ngOnInit() { }
+   }
   
   async showLoading() {
     this.loading = await this.loadingCtrl.create({
