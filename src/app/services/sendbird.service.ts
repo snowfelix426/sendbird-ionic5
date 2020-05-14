@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 
-import * as SendBird from "SendBird";
+import * as SendBird from 'SendBird';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class SendBirdService {
-  public sendBird: any;
-  public channelHandler: any;
+  sendBird: any;
+  channelHandler: any;
 
   constructor() {
     this.sendBird = new SendBird({
-      appId: "B575696C-C8AD-4EED-86AF-C26614E5E315",
+      appId: 'B575696C-C8AD-4EED-86AF-C26614E5E315',
     });
     this.channelHandler = new this.sendBird.ChannelHandler();
   }

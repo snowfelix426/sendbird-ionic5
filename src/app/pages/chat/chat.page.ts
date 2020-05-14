@@ -22,9 +22,9 @@ import {
 import { isNullOrUndefined } from 'util';
 
 @Component({
-  selector: "app-chat",
-  templateUrl: "./chat.page.html",
-  styleUrls: ["./chat.page.scss"],
+  selector: 'app-chat',
+  templateUrl: './chat.page.html',
+  styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;

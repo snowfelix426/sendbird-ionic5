@@ -26,7 +26,7 @@ export class ListPage implements OnInit {
   
   async initialConnect() {
     this.loading = await this.loadingCtrl.create({
-      message: "Please wait...",
+      message: 'Please wait...',
       duration: 10000,
     });
     this.presentPrompt("Connect as...").then((email) => {
@@ -45,7 +45,7 @@ export class ListPage implements OnInit {
   }
 
   createPrivateChannel() {
-    this.presentPrompt("Create chat with...").then((user) => {
+    this.presentPrompt('Create chat with...').then((user) => {
       this.sendBird.createOneToOneChat(user).then((channel) => {
         this.getChannels();
         console.log("channel", channel);
@@ -53,7 +53,7 @@ export class ListPage implements OnInit {
     });
   }
 
-  chatTapped(event, chat) {
+  chatTapped(chat) {
     let data: NavigationExtras = {
       state: {
         chat: chat,
