@@ -19,6 +19,7 @@ import {
     subMonths,
     subWeeks
 } from "date-fns";
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: "app-chat",
