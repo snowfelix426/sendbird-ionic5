@@ -1,9 +1,31 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>chat</ion-title>
+    <ion-title *ngIf="chat.members[0].userId !== user.userId"> {{ chat.members[0].userId }} </ion-title>
+    <ion-title *ngIf="chat.members[0].userId === user.userId"> {{ chat.members[1].userId }} </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+<ion-content class="home">
+  <ion-list>
+    <ion-item *ngFor="let message of messages" [ngClass]="{'-left': message._sender.userId !== user.userId }">
+      <ion-avatar *ngIf="message._sender.userId !== user.userId" slot="start"> 
+        <img src="{{ message._sender.profileUrl }}">
+      </ion-avatar>
+      {{ message.message }}
+      <ion-avatar *ngIf="message._sender.userId === user.userId" slot="end"> 
+        <img src="{{ message._sender.profileUrl }}">
+      </ion-avatar>
+    </ion-item>
+  </ion-list>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-input type="text" placeholder="Message..." [(ngModel)]="chatBox"></ion-input>
+    <ion-buttons end>
+      <ion-button button (click)="sendMessage(chatBox)">
+        <ion-icon slot="icon-only" name=" send"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

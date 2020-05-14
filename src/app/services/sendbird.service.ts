@@ -79,19 +79,15 @@ export class SendBirdService {
    */
   createOneToOneChat(
     userId,
-    name = userId,
-    coverFile?,
-    data?,
-    customType?
+    name = userId
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.sendBird.GroupChannel.createChannelWithUserIds(
         [userId],
         true,
         name,
-        coverFile,
-        data,
-        customType,
+        null,
+        null,
         function (createdChannel, error) {
           if (error) {
             console.error(error);

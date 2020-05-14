@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { NavController, NavParams, IonContent, LoadingController } from "@ionic/angular";
+import { Router, ActivatedRoute } from "@angular/router";
+import { IonContent, LoadingController } from "@ionic/angular";
 import { SendBirdService } from "../../services/sendbird.service";
 
 @Component({
@@ -16,25 +17,27 @@ export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
   constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
     private sendBird: SendBirdService,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private route: ActivatedRoute,
+    public router: Router
   ) {
-    this.loading = this.loadingCtrl.create({
-      message: "Please wait...",
-      duration: 5000,
+    this.showLoading();
+
+    this.route.queryParams.subscribe((params) => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.chat = this.router.getCurrentNavigation().extras.state.chat;
+        this.user = this.router.getCurrentNavigation().extras.state.user;
+        console.log("this.chat: ", this.chat);
+        console.log("this.user: ", this.user);
+      }
     });
-    this.loading.present();
-    this.chat = this.navParams.get("chat");
-    console.log("this.chat: ", this.chat);
-    this.user = this.navParams.get("user");
-    console.log("this.user: ", this.user);
+
     this.sendBird
       .enterOnChat(this.chat.url)
       .then((channel) => (this.chat = channel));
     this.subscribeOnReceiveMessages();
-    
+
     var messageListQuery = this.chat.createPreviousMessageListQuery();
     messageListQuery.load(
       30,
@@ -50,11 +53,19 @@ export class ChatPage implements OnInit {
 
   ngOnInit() { }
   
-  public ionViewWillLeave(): void {
+  async showLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: "Please wait...",
+      duration: 5000,
+    });
+    await this.loading.present();
+  }
+
+  ionViewWillLeave() {
     this.sendBird.removeChannelHandler(this.chat.url);
   }
 
-  public sendMessage(message: string = null): void {
+  sendMessage(message = null) {
     this.scrollBottom();
     if (!message || message === "") return;
     this.chat.sendUserMessage(message, (message, error) => {
@@ -65,7 +76,7 @@ export class ChatPage implements OnInit {
     });
   }
 
-  private subscribeOnReceiveMessages(): any {
+  subscribeOnReceiveMessages() {
     this.sendBird.addChannelHandler(this.chat.url);
     this.sendBird.channelHandler.onMessageReceived = (channel, message) => {
       this.messages.push(message);
@@ -73,7 +84,7 @@ export class ChatPage implements OnInit {
     };
   }
 
-  private scrollBottom(): void {
+  scrollBottom() {
     setTimeout(() => {
       this.content.scrollToBottom();
     }, 200);
