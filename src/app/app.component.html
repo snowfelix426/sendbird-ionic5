@@ -9,13 +9,10 @@
 
       <ion-content>
         <ion-list>
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of pages; let i = index">
-            <ion-item [routerDirection]="'root'" [routerLink]="p.url">
-              <ion-label [class.important]="p.important" >
-                {{p.title}}
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+          <ion-item button menuClose *ngFor="let p of pages" [routerLink]="p.url">
+            {{p.title}}
+          </ion-item>
+
         </ion-list>
       </ion-content>
     </ion-menu>

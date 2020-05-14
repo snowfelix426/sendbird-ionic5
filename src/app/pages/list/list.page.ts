@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Router, NavigationExtras } from "@angular/router";
 import {
   NavController,
-  NavParams,
   LoadingController,
   AlertController
 } from "@ionic/angular";
@@ -21,12 +20,17 @@ export class ListPage implements OnInit {
   constructor(
     private router: Router,
     public navCtrl: NavController,
-    public navParams: NavParams,
     private sendBird: SendBirdService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController
   ) {
-    this.loading = this.loadingCtrl.create({
+    this.initialConnect();
+  }
+
+  ngOnInit() { }
+  
+  async initialConnect() {
+    this.loading = await this.loadingCtrl.create({
       message: "Please wait...",
       duration: 10000,
     });
@@ -38,14 +42,15 @@ export class ListPage implements OnInit {
           this.user = user;
           this.getChannels();
         })
-        .catch((e) => console.log("error", e));
+        .catch((e) => {
+          console.log("error", e)
+          this.loading.dismiss();
+        });
     });
   }
 
-  ngOnInit() {}
-
   createPrivateChannel() {
-    this.presentPrompt("create chat with...").then((user) => {
+    this.presentPrompt("Create chat with...").then((user) => {
       this.sendBird.createOneToOneChat(user).then((channel) => {
         this.getChannels();
         console.log("channel", channel);
