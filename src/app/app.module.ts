@@ -11,8 +11,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { MessageOptionComponent } from './component/message-option/message-option.component';
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [MessageOptionComponent],
+  declarations: [AppComponent, MessageOptionComponent],
+  entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
   providers: [
     StatusBar,
