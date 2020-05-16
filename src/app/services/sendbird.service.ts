@@ -145,11 +145,6 @@ export class SendBirdService {
 
   deleteMessage(message, channel) {
     return new Promise((resolve, reject) => {
-      // if (!this.isCurrentUser(message.sender)) {
-      //   reject({
-      //     message: 'You have not ownership in this message.'
-      //   });
-      // }
       channel.deleteMessage(message, (response, error) => {
         error ? reject(error) : resolve(response);
       });

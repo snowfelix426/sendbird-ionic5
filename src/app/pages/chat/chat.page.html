@@ -16,12 +16,12 @@
       <!-- <ion-avatar *ngIf="message._sender.userId !== user.userId" slot="start"> 
         <img src="{{ message._sender.profileUrl }}">
       </ion-avatar> -->
-      
+
       <ion-text [innerHtml]="message.message" class="ion-text-wrap" slot="start"
         *ngIf="message._sender.userId !== user.userId"></ion-text>
       <ion-text [innerHtml]="message.message" class="ion-text-wrap" slot="end"
         *ngIf="message._sender.userId === user.userId"></ion-text>
-      <ion-icon name="ellipsis-vertical" slot="end" (click)="presentPopover($event)"
+      <ion-icon name="ellipsis-vertical" slot="end" (click)="presentPopover($event, message)"
         *ngIf="message._sender.userId === user.userId"></ion-icon>
 
       <!-- {{ getDateGroupFromMessage(message) }} -->

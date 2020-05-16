@@ -34,6 +34,7 @@ export class ChatPage implements OnInit {
   chat: any;
   chatBox: string = "";
   messages: Array<any> = [];
+  currentMessage: any;
   user: any;
   loadingBar: any;
 
@@ -83,8 +84,7 @@ export class ChatPage implements OnInit {
     if (this.previousMessageQuery.hasMore && !this.previousMessageQuery.isLoading) {
       this.previousMessageQuery.load(30, true, (messageList, error) => {
         if (error) return console.error(error);
-        for (var i = 0; i < messageList.length; i++) {
-          let message = messageList[i];
+        messageList.forEach(message => {
           let _message = message.message;
           if (this.urlexp.test(_message)) {
             _message =
@@ -98,7 +98,7 @@ export class ChatPage implements OnInit {
           }
           message.message = _message;
           this.messages.unshift(message);
-        }
+        });
 
         this.loading = false;
         this.noMoreResults = false;
@@ -162,22 +162,46 @@ export class ChatPage implements OnInit {
   subscribeOnReceiveMessages() {
     this.sendBird.addChannelHandler(this.chat.url);
     this.sendBird.channelHandler.onMessageReceived = (channel, message) => {
-      this.messages.push(message);
-      this.scrollBottom();
+      if (this.chat.url === channel.url) {
+        this.messages.push(message);
+        this.scrollBottom();
+      }
+    };
+    this.sendBird.channelHandler.onMessageUpdated = (channel, message) => {
+      if (this.chat.url === channel.url) {
+         //this.main.renderMessages([message], false);
+      }
+    };
+    this.sendBird.channelHandler.onMessageDeleted = (channel, messageId) => {
+      if (this.chat.url === channel.url) {
+        this.deleteMessageFromArray(messageId);
+      }
     };
   }
+  
+  deleteMessage() {
+    this.sendBird.deleteMessage(this.currentMessage, this.chat)
+      .then(() => {
+        this.deleteMessageFromArray(this.currentMessage.messageId);
+      });
+  }
 
-  async presentPopover(ev: any) {
+  deleteMessageFromArray(messageId) {
+    this.messages = this.messages.filter(message => String(message.messageId) !== String(messageId));
+  }
+
+  async presentPopover(event, message) {
     const popover = await this.popover.create({
       component: MessageOptionComponent,
       componentProps: {homeRef: this},
-      event: ev,
+      event: event,
       translucent: true
     });
+    this.currentMessage = message;
     return await popover.present();
   }
 
-  ClosePopover() {
+  closePopover() {
     this.popover.dismiss();
   }
 
