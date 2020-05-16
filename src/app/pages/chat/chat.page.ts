@@ -171,8 +171,7 @@ export class ChatPage implements OnInit {
     const popover = await this.popover.create({
       component: MessageOptionComponent,
       event: ev,
-      translucent: true,
-      showBackdrop: true
+      translucent: true
     });
     return await popover.present();
   }
