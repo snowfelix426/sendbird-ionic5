@@ -111,18 +111,15 @@ export class SendBirdService {
     });
   }
 
-  addChannelHandler(uniqueID: string): any {
+  addChannelHandler(uniqueID) {
     this.sendBird.addChannelHandler(uniqueID, this.channelHandler);
   }
 
-  removeChannelHandler(uniqueID: string): void {
+  removeChannelHandler(uniqueID) {
     this.sendBird.removeChannelHandler(uniqueID);
   }
 
-  sendChannelMessage(
-    message: string = "",
-    channel: any
-  ): Promise<string> {
+  sendChannelMessage(message = "", channel): Promise<string> {
     return new Promise((resolve, reject) => {
       channel.sendUserMessage(message, (message, error) => {
         if (error) {
@@ -130,6 +127,31 @@ export class SendBirdService {
           return reject(error);
         }
         return resolve(message);
+      });
+    });
+  }
+
+  editMessage(messageId, message, channel) {
+    return new Promise((resolve, reject) => {
+      channel.updateUserMessage(messageId, message, null, null, (message, error) => {
+        if (error) {
+          console.error(error);
+          return reject(error);
+        }
+        return resolve(message);
+      });
+    });
+  }
+
+  deleteMessage(message, channel) {
+    return new Promise((resolve, reject) => {
+      // if (!this.isCurrentUser(message.sender)) {
+      //   reject({
+      //     message: 'You have not ownership in this message.'
+      //   });
+      // }
+      channel.deleteMessage(message, (response, error) => {
+        error ? reject(error) : resolve(response);
       });
     });
   }

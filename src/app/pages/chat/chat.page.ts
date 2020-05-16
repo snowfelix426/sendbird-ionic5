@@ -170,6 +170,7 @@ export class ChatPage implements OnInit {
   async presentPopover(ev: any) {
     const popover = await this.popover.create({
       component: MessageOptionComponent,
+      componentProps: {homeRef: this},
       event: ev,
       translucent: true
     });
@@ -177,7 +178,7 @@ export class ChatPage implements OnInit {
   }
 
   ClosePopover() {
-    this.popover.dismiss();
+    this.popover.dismiss();
   }
 
   scrollBottom() {
