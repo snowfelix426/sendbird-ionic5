@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IonContent, LoadingController, PopoverController } from '@ionic/angular';
 import { SendBirdService } from '../../services/sendbird.service';
+import { MessageOptionComponent } from '../../component/message-option/message-option.component';
 import {
   format,
   isAfter,
@@ -43,9 +44,7 @@ export class ChatPage implements OnInit {
   noMoreResults = false;
   previousMessageQuery = null;
   urlexp = new RegExp(
-        '(http|https)://[a-z0-9-_]+(.[a-z0-9-_]+)+([a-z0-9-.,@?^=%&;:/~+#]*[a-z0-9-@?^=%&;/~+#])?',
-        'i'
-      );
+        '(http|https)://[a-z0-9-_]+(.[a-z0-9-_]+)+([a-z0-9-.,@?^=%&;:/~+#]*[a-z0-9-@?^=%&;/~+#])?', 'i');
   
   constructor(
     private sendBird: SendBirdService,
@@ -166,6 +165,16 @@ export class ChatPage implements OnInit {
       this.messages.push(message);
       this.scrollBottom();
     };
+  }
+
+  async presentPopover(ev: any) {
+    const popover = await this.popover.create({
+      component: MessageOptionComponent,
+      event: ev,
+      translucent: true,
+      showBackdrop: true
+    });
+    return await popover.present();
   }
 
   ClosePopover() {
