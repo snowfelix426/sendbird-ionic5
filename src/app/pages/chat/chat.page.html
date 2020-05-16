@@ -13,14 +13,15 @@
 
   <ion-list>
     <ion-item *ngFor="let message of messages" [ngClass]="{'-left': message._sender.userId !== user.userId }">
-      <ion-avatar *ngIf="message._sender.userId !== user.userId" slot="start"> 
+      <!-- <ion-avatar *ngIf="message._sender.userId !== user.userId" slot="start"> 
         <img src="{{ message._sender.profileUrl }}">
-      </ion-avatar>
-      {{ message.message }}
-      {{ getDateGroupFromMessage(message) }}
-      <ion-avatar *ngIf="message._sender.userId === user.userId" slot="end"> 
+      </ion-avatar> -->
+      <ion-text [innerHtml]="message.message" class="ion-text-wrap"></ion-text>
+      <ion-icon name="ellipsis-vertical" slot="end"></ion-icon>
+      <!-- {{ getDateGroupFromMessage(message) }} -->
+      <!-- <ion-avatar *ngIf="message._sender.userId === user.userId" slot="end"> 
         <img src="{{ message._sender.profileUrl }}">
-      </ion-avatar>
+      </ion-avatar> -->
     </ion-item>
   </ion-list>
 </ion-content>

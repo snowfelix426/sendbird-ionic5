@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IonContent, LoadingController } from '@ionic/angular';
+import { IonContent, LoadingController, PopoverController } from '@ionic/angular';
 import { SendBirdService } from '../../services/sendbird.service';
 import {
   format,
@@ -20,6 +20,7 @@ import {
   subWeeks,
 } from 'date-fns';
 import { isNullOrUndefined } from 'util';
+import { xssEscape } from '../../config/utils.config';
 
 @Component({
   selector: 'app-chat',
@@ -36,13 +37,19 @@ export class ChatPage implements OnInit {
   loadingBar: any;
 
   loading = false;
+  loadMore = false;
   isScrolling = false;
   infiniteScrollEvent = null;
   noMoreResults = false;
   previousMessageQuery = null;
+  urlexp = new RegExp(
+        '(http|https)://[a-z0-9-_]+(.[a-z0-9-_]+)+([a-z0-9-.,@?^=%&;:/~+#]*[a-z0-9-@?^=%&;/~+#])?',
+        'i'
+      );
   
   constructor(
     private sendBird: SendBirdService,
+    private popover: PopoverController,
     private loadingCtrl: LoadingController,
     private route: ActivatedRoute,
     public router: Router
@@ -69,7 +76,7 @@ export class ChatPage implements OnInit {
     this.getMessageList();
   }
   
-  getMessageList() {
+  getMessageList(loadMore = false) {
     if(this.previousMessageQuery === null) {
       this.previousMessageQuery = this.chat.createPreviousMessageListQuery();
     }
@@ -77,16 +84,31 @@ export class ChatPage implements OnInit {
     if (this.previousMessageQuery.hasMore && !this.previousMessageQuery.isLoading) {
       this.previousMessageQuery.load(30, true, (messageList, error) => {
         if (error) return console.error(error);
-        let tempTime;
         for (var i = 0; i < messageList.length; i++) {
-          this.messages.unshift(messageList[i]);
+          let message = messageList[i];
+          let _message = message.message;
+          if (this.urlexp.test(_message)) {
+            _message =
+              '<a href="' +
+              _message +
+              '" target="_blank" style="color: #3880ff;">' +
+              _message +
+              '</a>';
+          } else {
+            _message = xssEscape(_message);
+          }
+          message.message = _message;
+          this.messages.unshift(message);
         }
 
         this.loading = false;
         this.noMoreResults = false;
         this.completeInfiniteScrollEvent();
         this.loadingBar && this.loadingBar.dismiss();
-        this.scrollBottom();
+
+        if (!loadMore) {
+          this.scrollBottom();
+        }
       });
     } else {
       this.loading = true;
@@ -107,15 +129,13 @@ export class ChatPage implements OnInit {
     console.log("infinite scroll load");
     this.infiniteScrollEvent = event;
 
-    this.getMessageList();
+    this.getMessageList(true);
 
     if (this.noMoreResults || this.loading) {
       return this.completeInfiniteScrollEvent();
     }
 
     this.loading = true;
-
-    //this.getMessageList(true);
   }
 
   completeInfiniteScrollEvent() {
@@ -147,6 +167,10 @@ export class ChatPage implements OnInit {
       this.scrollBottom();
     };
   }
+
+  ClosePopover() {
+    this.popover.dismiss();
+  }
 
   scrollBottom() {
     setTimeout(() => {

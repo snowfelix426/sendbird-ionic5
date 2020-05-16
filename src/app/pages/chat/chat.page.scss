@@ -10,5 +10,9 @@
     .item-inner {
       border: 0 !important;
     }
+
+    ion-text {
+      overflow-wrap: anywhere;
+    }
   }
 }
