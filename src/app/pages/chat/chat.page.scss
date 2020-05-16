@@ -3,16 +3,13 @@
     border: 0 !important;
     text-align: right !important;
 
-    &.-left {
-      text-align: left !important;
-    }
-
     .item-inner {
       border: 0 !important;
     }
 
     ion-text {
       overflow-wrap: anywhere;
+      max-width: 60%;
     }
   }
 }

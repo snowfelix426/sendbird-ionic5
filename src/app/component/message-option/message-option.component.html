@@ -1,5 +1,12 @@
 <ion-list>
-  <ion-list-header>Ionic</ion-list-header>
-  <ion-item button (click)="edit()">Edit</ion-item>
-  <ion-item button (click)="close()">Remove</ion-item>
+  <ion-item (click)="edit()">
+    <ion-label>
+      Edit
+    </ion-label>
+  </ion-item>
+  <ion-item (click)="close()">
+    <ion-label>
+      Remove
+    </ion-label>
+  </ion-item>
 </ion-list>
