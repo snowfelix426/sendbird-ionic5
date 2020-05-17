@@ -131,7 +131,9 @@ export class SendBirdService {
     });
   }
 
-  editMessage(messageId, message, channel) {
+  updateMessage(messageId, message, channel) {
+    console.log(messageId);
+    console.log(message);
     return new Promise((resolve, reject) => {
       channel.updateUserMessage(messageId, message, null, null, (message, error) => {
         if (error) {

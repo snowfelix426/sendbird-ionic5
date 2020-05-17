@@ -21,7 +21,7 @@ import {
   subWeeks,
 } from 'date-fns';
 import { isNullOrUndefined } from 'util';
-import { xssEscape } from '../../config/utils.config';
+import { xssEscape, xssUnEscape, stringToUrlLink, urlLinkToString } from '../../config/utils.config';
 
 @Component({
   selector: 'app-chat',
@@ -156,6 +156,7 @@ export class ChatPage implements OnInit {
     };
     this.sendBird.channelHandler.onMessageUpdated = (channel, message) => {
       if (this.chat.url === channel.url) {
+        console.log(message);
          //this.main.renderMessages([message], false);
       }
     };
@@ -167,20 +168,33 @@ export class ChatPage implements OnInit {
   }
 
   sendMessage(message = null) {
-    this.scrollBottom();
     if (!message || message === "") return;
-    this.chat.sendUserMessage(message, (message, error) => {
-      if (error) return console.error(error);
-      this.messages.push(message);
-      this.chatBox = "";
+
+    if (this.isEditing) {
+      this.sendBird.updateMessage(this.currentMessage.messageId, message, this.chat)
+        .then(message => {
+          this.editMessageFromArray(message);
+          this.chatBox = "";
+        }).catch(error => 
+          console.error(error)
+        );
+    } else {
       this.scrollBottom();
-    });
+      this.sendBird.sendChannelMessage(message, this.chat)
+        .then(message => {
+          this.messages.push(message);
+          this.chatBox = "";
+          this.scrollBottom();
+        }).catch(error => 
+          console.error(error)
+        );
+    }
   }
 
   editMessage() {
-    this.chatBox = this.currentMessage.message;
+    this.chatBox = xssUnEscape(this.currentMessage.message);
     this.messageInput.setFocus();
-    this.closePopover();
+    this.isEditing = true;
   }
   
   deleteMessage() {
@@ -188,7 +202,14 @@ export class ChatPage implements OnInit {
       .then(() => {
         this.deleteMessageFromArray(this.currentMessage.messageId);
       });
-    this.closePopover();
+  }
+
+  editMessageFromArray(changedMessage) {
+    this.messages.forEach(message => {
+      if (String(message.messageId) === String(changedMessage.messageId)) {
+        message.message = changedMessage.message;
+      }
+    });
   }
 
   deleteMessageFromArray(messageId) {
