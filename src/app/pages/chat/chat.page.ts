@@ -71,7 +71,7 @@ export class ChatPage implements OnInit {
     this.sendBird
       .enterOnChat(this.chat.url)
       .then((channel) => (this.chat = channel));
-    this.subscribeOnReceiveMessages();
+    this.subscribeOnMessages();
 
     this.getMessageList();
   }
@@ -144,22 +144,7 @@ export class ChatPage implements OnInit {
     }
   }
 
-  ionViewWillLeave() {
-    this.sendBird.removeChannelHandler(this.chat.url);
-  }
-
-  sendMessage(message = null) {
-    this.scrollBottom();
-    if (!message || message === "") return;
-    this.chat.sendUserMessage(message, (message, error) => {
-      if (error) return console.error(error);
-      this.messages.push(message);
-      this.chatBox = "";
-      this.scrollBottom();
-    });
-  }
-
-  subscribeOnReceiveMessages() {
+  subscribeOnMessages() {
     this.sendBird.addChannelHandler(this.chat.url);
     this.sendBird.channelHandler.onMessageReceived = (channel, message) => {
       if (this.chat.url === channel.url) {
@@ -178,6 +163,17 @@ export class ChatPage implements OnInit {
       }
     };
   }
+
+  sendMessage(message = null) {
+    this.scrollBottom();
+    if (!message || message === "") return;
+    this.chat.sendUserMessage(message, (message, error) => {
+      if (error) return console.error(error);
+      this.messages.push(message);
+      this.chatBox = "";
+      this.scrollBottom();
+    });
+  }  
   
   deleteMessage() {
     this.sendBird.deleteMessage(this.currentMessage, this.chat)
@@ -209,6 +205,10 @@ export class ChatPage implements OnInit {
     setTimeout(() => {
       this.content.scrollToBottom();
     }, 200);
+  }
+
+  ionViewWillLeave() {
+    this.sendBird.removeChannelHandler(this.chat.url);
   }
 
   getMessageTime(message) {
