@@ -34,7 +34,7 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-input type="text" placeholder="Message..." [(ngModel)]="chatBox"></ion-input>
+    <ion-input type="text" placeholder="Message..." [(ngModel)]="chatBox" #messageInput></ion-input>
     <ion-buttons slot="end">
       <ion-button button (click)="sendMessage(chatBox)">
         <ion-icon slot="icon-only" name="send"></ion-icon>

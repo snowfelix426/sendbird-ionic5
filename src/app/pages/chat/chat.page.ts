@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IonContent, LoadingController, PopoverController } from '@ionic/angular';
+import { IonContent, LoadingController, PopoverController, IonInput } from '@ionic/angular';
 import { SendBirdService } from '../../services/sendbird.service';
 import { MessageOptionComponent } from '../../component/message-option/message-option.component';
 import {
@@ -30,6 +30,7 @@ import { xssEscape } from '../../config/utils.config';
 })
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
+  @ViewChild('messageInput') messageInput: IonInput;
 
   chat: any;
   chatBox: string = "";
@@ -41,6 +42,7 @@ export class ChatPage implements OnInit {
   loading = false;
   loadMore = false;
   isScrolling = false;
+  isEditing = false;
   infiniteScrollEvent = null;
   noMoreResults = false;
   previousMessageQuery = null;
@@ -173,13 +175,20 @@ export class ChatPage implements OnInit {
       this.chatBox = "";
       this.scrollBottom();
     });
-  }  
+  }
+
+  editMessage() {
+    this.chatBox = this.currentMessage.message;
+    this.messageInput.setFocus();
+    this.closePopover();
+  }
   
   deleteMessage() {
     this.sendBird.deleteMessage(this.currentMessage, this.chat)
       .then(() => {
         this.deleteMessageFromArray(this.currentMessage.messageId);
       });
+    this.closePopover();
   }
 
   deleteMessageFromArray(messageId) {

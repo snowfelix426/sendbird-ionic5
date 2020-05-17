@@ -12,9 +12,11 @@ export class MessageOptionComponent implements OnInit {
 
   ngOnInit() { }
   
-  remove() {
-    this.homeRef.deleteMessage();
-    this.homeRef.closePopover();
+  edit() {
+    this.homeRef.editMessage();
   }
 
+  remove() {
+    this.homeRef.deleteMessage();
+  }
 }
