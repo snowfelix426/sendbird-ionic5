@@ -204,7 +204,7 @@ export class ChatPage implements OnInit {
       });
   }
 
-  editMessageFromArray(changedMessage) {
+  editMessageFromArray(changedMessage: any) {
     this.messages.forEach(message => {
       if (String(message.messageId) === String(changedMessage.messageId)) {
         message.message = changedMessage.message;

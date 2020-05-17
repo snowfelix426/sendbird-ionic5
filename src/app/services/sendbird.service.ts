@@ -99,7 +99,7 @@ export class SendBirdService {
     });
   }
 
-  enterOnChat(channelUrl): Promise<any> {
+  enterOnChat(channelUrl: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.sendBird.GroupChannel.getChannel(channelUrl, (channel, error) => {
         if (error) {
@@ -111,15 +111,15 @@ export class SendBirdService {
     });
   }
 
-  addChannelHandler(uniqueID) {
+  addChannelHandler(uniqueID: string) {
     this.sendBird.addChannelHandler(uniqueID, this.channelHandler);
   }
 
-  removeChannelHandler(uniqueID) {
+  removeChannelHandler(uniqueID: string) {
     this.sendBird.removeChannelHandler(uniqueID);
   }
 
-  sendChannelMessage(message = "", channel): Promise<string> {
+  sendChannelMessage(message = '', channel: any): Promise<string> {
     return new Promise((resolve, reject) => {
       channel.sendUserMessage(message, (message, error) => {
         if (error) {
@@ -131,9 +131,7 @@ export class SendBirdService {
     });
   }
 
-  updateMessage(messageId, message, channel) {
-    console.log(messageId);
-    console.log(message);
+  updateMessage(messageId: any, message: string, channel: any) {
     return new Promise((resolve, reject) => {
       channel.updateUserMessage(messageId, message, null, null, (message, error) => {
         if (error) {
@@ -145,7 +143,7 @@ export class SendBirdService {
     });
   }
 
-  deleteMessage(message, channel) {
+  deleteMessage(message: any, channel: any) {
     return new Promise((resolve, reject) => {
       channel.deleteMessage(message, (response, error) => {
         error ? reject(error) : resolve(response);
