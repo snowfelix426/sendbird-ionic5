@@ -12,23 +12,31 @@
   </ion-infinite-scroll>
 
   <ion-list>
-    <ion-item *ngFor="let message of messages" [ngClass]="{'-left': message._sender.userId !== user.userId }">
-      <!-- <ion-avatar *ngIf="message._sender.userId !== user.userId" slot="start"> 
-        <img src="{{ message._sender.profileUrl }}">
-      </ion-avatar> -->
-
-      <ion-text [innerHtml]="message.message" class="ion-text-wrap" slot="start"
-        *ngIf="message._sender.userId !== user.userId"></ion-text>
-      <ion-text [innerHtml]="message.message" class="ion-text-wrap" slot="end"
-        *ngIf="message._sender.userId === user.userId"></ion-text>
-      <ion-icon name="ellipsis-vertical" slot="end" (click)="presentPopover($event, message)"
-        *ngIf="message._sender.userId === user.userId"></ion-icon>
-
-      <!-- {{ getDateGroupFromMessage(message) }} -->
-      <!-- <ion-avatar *ngIf="message._sender.userId === user.userId" slot="end"> 
-        <img src="{{ message._sender.profileUrl }}">
-      </ion-avatar> -->
-    </ion-item>
+    <ng-container *ngFor="let message of messages; let i = index;">
+      <div class="date-divider" *ngIf="messages[i]?.customType != messages[i - 1]?.customType">
+        <div class="divider"></div>
+        <div class="label">
+          {{message.customType}}
+        </div>
+      </div>
+      <ion-item [ngClass]="{'-left': message._sender.userId !== user.userId }">
+        <!-- <ion-avatar *ngIf="message._sender.userId !== user.userId" slot="start"> 
+          <img src="{{ message._sender.profileUrl }}">
+        </ion-avatar> -->
+  
+        <ion-text [innerHtml]="message.message" class="ion-text-wrap" slot="start"
+          *ngIf="message._sender.userId !== user.userId"></ion-text>
+        <ion-text [innerHtml]="message.message" class="ion-text-wrap" slot="end"
+          *ngIf="message._sender.userId === user.userId"></ion-text>
+        <ion-icon name="ellipsis-vertical" slot="end" (click)="presentPopover($event, message)"
+          *ngIf="message._sender.userId === user.userId"></ion-icon>
+  
+        <!-- {{ getDateGroupFromMessage(message) }} -->
+        <!-- <ion-avatar *ngIf="message._sender.userId === user.userId" slot="end"> 
+          <img src="{{ message._sender.profileUrl }}">
+        </ion-avatar> -->
+      </ion-item>
+    </ng-container>
   </ion-list>
 </ion-content>
 

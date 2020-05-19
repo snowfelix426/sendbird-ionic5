@@ -98,6 +98,8 @@ export class ChatPage implements OnInit {
           } else {
             _message = xssEscape(_message);
           }
+          const group = this.getDateGroupFromMessage(message);
+          message.customType = group;
           message.message = _message;
           this.messages.unshift(message);
         });
@@ -147,7 +149,6 @@ export class ChatPage implements OnInit {
   }
 
   subscribeOnMessages() {
-    this.sendBird.addChannelHandler(this.chat.url);
     this.sendBird.channelHandler.onMessageReceived = (channel, message) => {
       if (this.chat.url === channel.url) {
         this.messages.push(message);
@@ -165,6 +166,8 @@ export class ChatPage implements OnInit {
         this.deleteMessageFromArray(messageId);
       }
     };
+
+    this.sendBird.addChannelHandler(this.chat.url);
   }
 
   sendMessage(message = null) {
@@ -182,6 +185,8 @@ export class ChatPage implements OnInit {
       this.scrollBottom();
       this.sendBird.sendChannelMessage(message, this.chat)
         .then(message => {
+          const group = this.getDateGroupFromMessage(message);
+          message.customType = group;
           this.messages.push(message);
           this.chatBox = "";
           this.scrollBottom();
@@ -189,6 +194,22 @@ export class ChatPage implements OnInit {
           console.error(error)
         );
     }
+  }
+
+  sendFileMessage(channel, file, action) {
+    let thumbSize = [
+      {
+        maxWidth: 160,
+        maxHeight: 160
+      }
+    ];
+    channel.sendFileMessage(file, "", "", thumbSize, (message, error) => {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      action(message);
+    });
   }
 
   editMessage() {
@@ -239,60 +260,6 @@ export class ChatPage implements OnInit {
 
   ionViewWillLeave() {
     this.sendBird.removeChannelHandler(this.chat.url);
-  }
-
-  getMessageTime(message) {
-    const months = [
-      "JAN",
-      "FEB",
-      "MAR",
-      "APR",
-      "MAY",
-      "JUN",
-      "JUL",
-      "AUG",
-      "SEP",
-      "OCT",
-      "NOV",
-      "DEC"
-    ];
-
-    var _getDay = val => {
-      let day = parseInt(val);
-      if (day == 1) {
-        return day + "st";
-      } else if (day == 2) {
-        return day + "en";
-      } else if (day == 3) {
-        return day + "rd";
-      } else {
-        return day + "th";
-      }
-    };
-
-    var _checkTime = val => {
-      return +val < 10 ? "0" + val : val;
-    };
-
-    if (message) {
-      const LAST_MESSAGE_YESTERDAY = "YESTERDAY";
-      var _nowDate = new Date();
-      var _date = new Date(message.createdAt);
-      if (_nowDate.getDate() - _date.getDate() == 1) {
-        return LAST_MESSAGE_YESTERDAY;
-      } else if (
-        _nowDate.getFullYear() == _date.getFullYear() &&
-        _nowDate.getMonth() == _date.getMonth() &&
-        _nowDate.getDate() == _date.getDate()
-      ) {
-        return (
-          _checkTime(_date.getHours()) + ":" + _checkTime(_date.getMinutes())
-        );
-      } else {
-        return months[_date.getMonth()] + " " + _getDay(_date.getDate());
-      }
-    }
-    return "";
   }
 
   getDateGroupFromMessage(message) {

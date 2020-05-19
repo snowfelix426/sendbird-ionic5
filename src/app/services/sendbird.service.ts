@@ -119,7 +119,7 @@ export class SendBirdService {
     this.sendBird.removeChannelHandler(uniqueID);
   }
 
-  sendChannelMessage(message = '', channel: any): Promise<string> {
+  sendChannelMessage(message = '', channel: any): Promise<any> {
     return new Promise((resolve, reject) => {
       channel.sendUserMessage(message, (message, error) => {
         if (error) {
