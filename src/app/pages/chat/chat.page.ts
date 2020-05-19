@@ -46,6 +46,7 @@ export class ChatPage implements OnInit {
   infiniteScrollEvent = null;
   noMoreResults = false;
   previousMessageQuery = null;
+  newMessagePoint = -1;
   urlexp = new RegExp(
         '(http|https)://[a-z0-9-_]+(.[a-z0-9-_]+)+([a-z0-9-.,@?^=%&;:/~+#]*[a-z0-9-@?^=%&;/~+#])?', 'i');
   
@@ -109,6 +110,10 @@ export class ChatPage implements OnInit {
         this.loadingBar && this.loadingBar.dismiss();
 
         if (!loadMore) {
+          if (this.chat.unreadMessageCount !== 0) {
+            this.newMessagePoint = this.messages.length - this.chat.unreadMessageCount - 1;
+            console.log(this.newMessagePoint);
+          }
           this.scrollBottom();
         }
       });
