@@ -70,9 +70,8 @@ export class ChatPage implements OnInit {
   }
 
   ngOnInit() {
-    this.sendBird
-      .enterOnChat(this.chat.url)
-      .then((channel) => (this.chat = channel));
+    this.sendBird.enterOnChat(this.chat.url)
+      .then(channel => this.chat = channel);
     this.subscribeOnMessages();
 
     this.getMessageList();
@@ -152,13 +151,13 @@ export class ChatPage implements OnInit {
     this.sendBird.channelHandler.onMessageReceived = (channel, message) => {
       if (this.chat.url === channel.url) {
         this.messages.push(message);
+        this.chat.markAsRead();
         this.scrollBottom();
       }
     };
     this.sendBird.channelHandler.onMessageUpdated = (channel, message) => {
       if (this.chat.url === channel.url) {
-        console.log(message);
-         //this.main.renderMessages([message], false);
+        this.editMessageFromArray(message);
       }
     };
     this.sendBird.channelHandler.onMessageDeleted = (channel, messageId) => {
@@ -166,6 +165,16 @@ export class ChatPage implements OnInit {
         this.deleteMessageFromArray(messageId);
       }
     };
+    this.sendBird.channelHandler.onChannelChanged = (channel) => {
+      if (this.chat.url === channel.url) {
+        console.log('channel changed');
+      }
+    };
+    this.sendBird.channelHandler.onReadReceiptUpdated = (channel) => {
+      if (this.chat.url === channel.url) {
+        console.log("Read already");
+      }
+    }
 
     this.sendBird.addChannelHandler(this.chat.url);
   }
@@ -237,6 +246,11 @@ export class ChatPage implements OnInit {
     this.messages = this.messages.filter(message => String(message.messageId) !== String(messageId));
   }
 
+  getUnreadMessageCount() {
+    const count = this.chat.unreadMessageCount > 9 ? '+9' : this.chat.unreadMessageCount.toString();
+    return this.chat.isOpenChannel() ? 0 : count;
+  }
+
   async presentPopover(event, message) {
     const popover = await this.popover.create({
       component: MessageOptionComponent,
@@ -255,6 +269,7 @@ export class ChatPage implements OnInit {
   scrollBottom() {
     setTimeout(() => {
       this.content.scrollToBottom();
+      this.chat.markAsRead();
     }, 200);
   }
 
