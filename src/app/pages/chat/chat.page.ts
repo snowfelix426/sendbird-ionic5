@@ -110,11 +110,9 @@ export class ChatPage implements OnInit {
         this.loadingBar && this.loadingBar.dismiss();
 
         if (!loadMore) {
-          if (this.chat.unreadMessageCount !== 0) {
-            this.newMessagePoint = this.messages.length - this.chat.unreadMessageCount - 1;
-            console.log(this.newMessagePoint);
-          }
           this.scrollBottom();
+          this.chat.markAsRead();
+          this.updateUnreadMessageCursor();
         }
       });
     } else {
@@ -173,6 +171,7 @@ export class ChatPage implements OnInit {
     this.sendBird.channelHandler.onChannelChanged = (channel) => {
       if (this.chat.url === channel.url) {
         console.log('channel changed');
+        this.updateUnreadMessageCursor();
       }
     };
     this.sendBird.channelHandler.onReadReceiptUpdated = (channel) => {
@@ -251,9 +250,11 @@ export class ChatPage implements OnInit {
     this.messages = this.messages.filter(message => String(message.messageId) !== String(messageId));
   }
 
-  getUnreadMessageCount() {
-    const count = this.chat.unreadMessageCount > 9 ? '+9' : this.chat.unreadMessageCount.toString();
-    return this.chat.isOpenChannel() ? 0 : count;
+  updateUnreadMessageCursor() {
+    this.newMessagePoint = -1;
+    if (this.chat.unreadMessageCount !== 0) {
+      this.newMessagePoint = this.messages.length - this.chat.unreadMessageCount - 1;
+    }
   }
 
   async presentPopover(event, message) {
@@ -274,7 +275,6 @@ export class ChatPage implements OnInit {
   scrollBottom() {
     setTimeout(() => {
       this.content.scrollToBottom();
-      this.chat.markAsRead();
     }, 200);
   }
 
