@@ -251,9 +251,10 @@ export class ChatPage implements OnInit {
   }
 
   updateUnreadMessageCursor() {
-    this.newMessagePoint = -1;
     if (this.chat.unreadMessageCount !== 0) {
       this.newMessagePoint = this.messages.length - this.chat.unreadMessageCount - 1;
+    } else {
+      this.newMessagePoint = -1;
     }
   }
 
