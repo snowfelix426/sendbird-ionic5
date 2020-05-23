@@ -171,7 +171,6 @@ export class ChatPage implements OnInit {
     this.sendBird.channelHandler.onChannelChanged = (channel) => {
       if (this.chat.url === channel.url) {
         console.log('channel changed');
-        this.updateUnreadMessageCursor();
       }
     };
     this.sendBird.channelHandler.onReadReceiptUpdated = (channel) => {
