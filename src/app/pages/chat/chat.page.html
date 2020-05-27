@@ -37,7 +37,7 @@
           <img src="{{ message._sender.profileUrl }}">
         </ion-avatar> -->
       </ion-item>
-      <div class="new-messages-divider" *ngIf="i === newMessagePoint && newMessagePoint > -1">
+      <div class="new-messages-divider" *ngIf="message.messageId === newMessagePoint && i !== messages.length - 1">
         <div class="divider"></div>
         <div class="label">
           new messages

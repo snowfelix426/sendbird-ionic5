@@ -154,7 +154,9 @@ export class ChatPage implements OnInit {
     this.sendBird.channelHandler.onMessageReceived = (channel, message) => {
       if (this.chat.url === channel.url) {
         this.messages.push(message);
+        
         this.chat.markAsRead();
+        this.updateUnreadMessageCursor();
         this.scrollBottom();
       }
     };
@@ -200,6 +202,7 @@ export class ChatPage implements OnInit {
           const group = this.getDateGroupFromMessage(message);
           message.customType = group;
           this.messages.push(message);
+          this.updateUnreadMessageCursor();
           this.chatBox = "";
           this.scrollBottom();
         }).catch(error => 
@@ -251,9 +254,9 @@ export class ChatPage implements OnInit {
 
   updateUnreadMessageCursor() {
     if (this.chat.unreadMessageCount !== 0) {
-      this.newMessagePoint = this.messages.length - this.chat.unreadMessageCount - 1;
+      this.newMessagePoint = this.messages[this.messages.length - this.chat.unreadMessageCount - 1].messageId;
     } else {
-      this.newMessagePoint = -1;
+      this.newMessagePoint = this.messages[this.messages.length - 1].messageId;
     }
   }
 
